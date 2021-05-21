@@ -21,12 +21,15 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 
+	"net/http"
+	_ "net/http/pprof"
 	goruntime "runtime"
 
 	"k8s.io/apimachinery/pkg/runtime"
@@ -60,6 +63,10 @@ func init() {
 }
 
 func main() {
+	go func() {
+		log.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
+
 	var metricsAddr string
 	var enableLeaderElection bool
 	var probeAddr string
@@ -100,6 +107,10 @@ func main() {
 		Trigger: events,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "DiscoveryConfig")
+		os.Exit(1)
+	}
+	if err = (&discovery.DiscoveryConfig{}).SetupWebhookWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create webhook", "webhook", "DiscoveryConfig")
 		os.Exit(1)
 	}
 	// +kubebuilder:scaffold:builder
