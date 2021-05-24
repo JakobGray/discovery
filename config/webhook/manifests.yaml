@@ -1,0 +1,27 @@
+
+---
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: ValidatingWebhookConfiguration
+metadata:
+  creationTimestamp: null
+  name: validating-webhook-configuration
+webhooks:
+- clientConfig:
+    caBundle: Cg==
+    service:
+      name: webhook-service
+      namespace: system
+      path: /validate-discovery-open-cluster-management-io-v1alpha1-discoveryconfig
+  failurePolicy: Fail
+  name: vdiscoveryconfig.kb.io
+  rules:
+  - apiGroups:
+    - discovery.open-cluster-management.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - discoveryconfigs
+  sideEffects: None
