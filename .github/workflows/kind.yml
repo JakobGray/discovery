@@ -23,6 +23,9 @@ jobs:
     steps:
     - name: Checkout Discovery
       uses: actions/checkout@v2
+      with:
+        path: discovery
+        fetch-depth: 0 # Fetch all history for all tags and branches
 
     - name: Set up Go - ${{ matrix.go }}
       uses: actions/setup-go@v2
