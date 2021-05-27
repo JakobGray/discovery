@@ -13,6 +13,8 @@ defaults:
 jobs:
   kind-tests:
     runs-on: ubuntu-latest
+    env:
+      REGISTRY: localhost:5000
     strategy:
       matrix:
         go:

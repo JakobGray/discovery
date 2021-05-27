@@ -264,11 +264,8 @@ docker-run-tests: ## Run the containerized functional tests
 -include testserver/Makefile
 
 ############################################################
-# e2e test section
+# KinD CI section
 ############################################################
-.PHONY: kind-bootstrap-cluster
-# Full setup of KinD cluster
-kind-bootstrap-cluster: kind-create-cluster kind-load-image kind-load-testserver-image kind-deploy-controller kind-deploy-testserver
 
 # Create deployment and configure it to never download image
 kind-deploy-controller:
@@ -296,10 +293,6 @@ kind-create-cluster:
 
 kind-delete-cluster:
 	kind delete cluster --name test-discovery
-
-kind-e2e-tests:
-	kubectl apply -f testserver/build/clusters.open-cluster-management.io_managedclusters.yaml
-	go test -v ./test/e2e -coverprofile cover.out -args -ginkgo.v -ginkgo.trace -namespace $(NAMESPACE)
 
 kind-debug:
 	kubectl get all -n $(NAMESPACE)
