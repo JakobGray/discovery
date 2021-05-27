@@ -29,10 +29,6 @@ jobs:
       id: go
       with:
         go-version: ${{ matrix.go }}
-
-    - name: Verify modules
-      run: |
-        go mod verify
         
     - name: Verify format
       run: |
