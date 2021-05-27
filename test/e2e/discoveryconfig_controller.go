@@ -112,7 +112,7 @@ var _ = Describe("[P1][Sev1][installer] Discoveryconfig controller", func() {
 			By("By checking 10 discovered clusters have been created", func() {
 				Eventually(func() (int, error) {
 					return countDiscoveredClusters(discoveryNamespace)
-				}, timeout, interval).Should(Equal(10))
+				}, timeout, interval).Should(Equal(11))
 			})
 		})
 	})
