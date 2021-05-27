@@ -300,3 +300,9 @@ kind-delete-cluster:
 kind-e2e-tests:
 	kubectl apply -f testserver/build/clusters.open-cluster-management.io_managedclusters.yaml
 	go test -v ./test/e2e -coverprofile cover.out -args -ginkgo.v -ginkgo.trace -namespace $(NAMESPACE)
+
+kind-debug:
+	kubectl get all -n $(NAMESPACE)
+	kubectl describe pods -n $(NAMESPACE)
+	kubectl logs deployment/mock-ocm-server -n $(NAMESPACE)
+	kubectl logs deployment/discovery-operator -n $(NAMESPACE)

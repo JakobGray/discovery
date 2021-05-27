@@ -71,6 +71,11 @@ jobs:
     - name: Integration Tests
       run: |
         make integration-tests
+
+    - name: Debug
+      if: ${{ failure() }}
+      run: |
+        make kind-debug
         
     - name: Clean up cluster
       if: ${{ always() }}
