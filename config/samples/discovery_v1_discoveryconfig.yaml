@@ -7,4 +7,6 @@ metadata:
 spec:
   credential: ocm-api-token
   filters:
-    lastActive: 7
+    lastActive: 1
+    openShiftVersions:
+    - "4.8"

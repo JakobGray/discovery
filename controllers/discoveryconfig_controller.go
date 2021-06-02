@@ -34,7 +34,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/event"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
-	"sigs.k8s.io/controller-runtime/pkg/predicate"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 
 	discovery "github.com/open-cluster-management/discovery/api/v1alpha1"
@@ -81,6 +80,11 @@ func (r *DiscoveryConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 	log := logr.FromContext(ctx)
 	log.Info("Reconciling DiscoveryConfig")
 
+	configs := &discovery.DiscoveryConfigList{}
+	if err := r.List(ctx, configs); err != nil {
+	}
+	totalConfigs.Set(float64(len(configs.Items)))
+
 	if req.Name != defaultDiscoveryConfigName {
 		err := fmt.Errorf("DiscoveryConfig resource name must be '%s'", defaultDiscoveryConfigName)
 		log.Error(err, "Invalid DiscoveryConfig resource name")
@@ -109,12 +113,6 @@ func (r *DiscoveryConfigReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 func (r *DiscoveryConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	c, err := ctrl.NewControllerManagedBy(mgr).
 		For(&discovery.DiscoveryConfig{}).
-		WithEventFilter(predicate.Funcs{
-			// Skip delete events
-			DeleteFunc: func(e event.DeleteEvent) bool {
-				return false
-			},
-		}).
 		Build(r)
 	if err != nil {
 		return errors.Wrapf(err, "error creating controller")
