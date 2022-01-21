@@ -40,9 +40,11 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 
-	discovery "github.com/stolostron/discovery/api/v1alpha1"
-	"github.com/stolostron/discovery/controllers"
 	clusterapiv1 "open-cluster-management.io/api/cluster/v1"
+
+	discoveryv1 "github.com/stolostron/discovery/api/v1"
+	discoveryv1alpha1 "github.com/stolostron/discovery/api/v1alpha1"
+	"github.com/stolostron/discovery/controllers"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -54,7 +56,7 @@ var (
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 
-	utilruntime.Must(discovery.AddToScheme(scheme))
+	utilruntime.Must(discoveryv1alpha1.AddToScheme(scheme))
 	utilruntime.Must(clusterapiv1.AddToScheme(scheme))
 
 	utilruntime.Must(corev1.AddToScheme(scheme))
@@ -102,6 +104,17 @@ func main() {
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "DiscoveryConfig")
 		os.Exit(1)
+	}
+
+	if os.Getenv("ENABLE_WEBHOOKS") != "false" {
+		if err = (&discoveryv1alpha1.DiscoveryConfig{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "DiscoveryConfig")
+			os.Exit(1)
+		}
+		if err = (&discoveryv1.DiscoveryConfig{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "DiscoveryConfig")
+			os.Exit(1)
+		}
 	}
 	// +kubebuilder:scaffold:builder
 
