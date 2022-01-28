@@ -57,6 +57,7 @@ func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 
 	utilruntime.Must(discoveryv1alpha1.AddToScheme(scheme))
+	utilruntime.Must(discoveryv1.AddToScheme(scheme))
 	utilruntime.Must(clusterapiv1.AddToScheme(scheme))
 
 	utilruntime.Must(corev1.AddToScheme(scheme))
@@ -106,16 +107,16 @@ func main() {
 		os.Exit(1)
 	}
 
-	if os.Getenv("ENABLE_WEBHOOKS") != "false" {
-		if err = (&discoveryv1alpha1.DiscoveryConfig{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "DiscoveryConfig")
-			os.Exit(1)
-		}
-		if err = (&discoveryv1.DiscoveryConfig{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "DiscoveryConfig")
-			os.Exit(1)
-		}
-	}
+	// if os.Getenv("ENABLE_WEBHOOKS") != "false" {
+	// 	if err = (&discoveryv1alpha1.DiscoveryConfig{}).SetupWebhookWithManager(mgr); err != nil {
+	// 		setupLog.Error(err, "unable to create webhook", "webhook", "DiscoveryConfig")
+	// 		os.Exit(1)
+	// 	}
+	// 	if err = (&discoveryv1.DiscoveryConfig{}).SetupWebhookWithManager(mgr); err != nil {
+	// 		setupLog.Error(err, "unable to create webhook", "webhook", "DiscoveryConfig")
+	// 		os.Exit(1)
+	// 	}
+	// }
 	// +kubebuilder:scaffold:builder
 
 	if err = (&controllers.ManagedClusterReconciler{
