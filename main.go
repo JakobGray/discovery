@@ -117,6 +117,14 @@ func main() {
 	// 		os.Exit(1)
 	// 	}
 	// }
+	if err = (&discoveryv1.DiscoveredCluster{}).SetupWebhookWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create webhook", "webhook", "DiscoveredCluster")
+		os.Exit(1)
+	}
+	if err = (&discoveryv1alpha1.DiscoveredCluster{}).SetupWebhookWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create webhook", "webhook", "DiscoveredCluster")
+		os.Exit(1)
+	}
 	// +kubebuilder:scaffold:builder
 
 	if err = (&controllers.ManagedClusterReconciler{
